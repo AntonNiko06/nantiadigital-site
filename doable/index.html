@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>doable - Simple Task Manager</title>
+  <meta name="description" content="doable is a clean, ad-free task manager for Android. Organize your day with ease." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --red:        #e8392a;
+      --red-light:  rgba(232, 57, 42, 0.12);
+      --red-dim:    rgba(232, 57, 42, 0.08);
+      --black:      #111111;
+      --dark:       #181818;
+      --dark2:      #222222;
+      --white:      #ffffff;
+      --off-white:  #f7f7f7;
+      --text:       #1a1a1a;
+      --text-muted: #666666;
+      --text-faint: #aaaaaa;
+      --border:     #e8e8e8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 400;
+      background: var(--white);
+      color: var(--text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    .hero {
+      background: var(--black);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle grid lines */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    /* Red ambient glow bottom-right */
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      right: -150px;
+      width: 750px;
+      height: 750px;
+      background: radial-gradient(circle, rgba(232,57,42,0.18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    /* Red ambient glow top-left */
+    .hero-glow-tl {
+      position: absolute;
+      top: -150px;
+      left: -150px;
+      width: 750px;
+      height: 750px;
+      background: radial-gradient(circle, rgba(232,57,42,0.18) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Nav */
+    .hero-nav {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem clamp(1.5rem, 6vw, 5rem);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-links .nav-cta {
+      background: var(--red);
+      color: var(--white);
+      padding: 0.5rem 1.3rem;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .nav-links .nav-cta:hover { opacity: 0.88; color: var(--white); }
+
+    /* Hero body */
+    .hero-body {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 6vw, 5rem) clamp(2rem, 4vw, 3rem);
+      gap: 2.5rem;
+    }
+
+    /* ── Logo glows ── */
+    .logo-glow-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-glow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 80%;
+      border-radius: 50%;
+      filter: blur(32px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .logo-glow-white {
+      left: 0;
+      width: 48%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.32) 0%, transparent 70%);
+    }
+
+    .logo-glow-red {
+      right: 0;
+      width: 70%;
+      background: radial-gradient(ellipse, rgba(232,57,42,0.32) 0%, transparent 70%);
+    }
+
+    /* ── Recreated doable logo ── */
+    .hero-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+
+    .hero-tagline {
+      font-size: clamp(1.3rem, 3.25vw, 1.69rem);
+      font-weight: 400;
+      color: rgba(255,255,255,0.55);
+      max-width: 520px;
+      line-height: 1.65;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.45s forwards;
+    }
+
+    .hero-tagline strong {
+      color: rgba(255,255,255,0.85);
+      font-weight: 600;
+    }
+
+    /* Download buttons */
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.6s forwards;
+    }
+
+    .btn-store {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      background: var(--white);
+      color: var(--black);
+      text-decoration: none;
+      padding: 0.9rem 1.8rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 1.17rem;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .btn-store:hover { transform: translateY(-2px); opacity: 0.92; }
+
+    .btn-store-sub {
+      font-size: 0.88rem;
+      font-weight: 400;
+      opacity: 0.55;
+      display: block;
+      line-height: 1;
+      margin-bottom: 1px;
+    }
+
+    .btn-store-label {
+      font-size: 1.3rem;
+      font-weight: 800;
+      display: block;
+      line-height: 1;
+    }
+
+    .btn-store svg {
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+
+    /* Badges row */
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.75s forwards;
+    }
+
+    .badge {
+      font-size: 0.91rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 0.35rem 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.5);
+    }
+
+    .badge.red {
+      border-color: rgba(232,57,42,0.4);
+      color: var(--red);
+      background: rgba(232,57,42,0.08);
+    }
+
+    /* ══════════════════════════════════════
+       SCREENSHOT CAROUSEL
+    ══════════════════════════════════════ */
+    .carousel-section {
+      background: var(--off-white);
+      padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 6vw, 5rem);
+    }
+
+    .section-label {
+      font-size: 0.91rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--red);
+      text-align: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: clamp(2.08rem, 5.2vw, 3.12rem);
+      font-weight: 800;
+      color: var(--text);
+      text-align: center;
+      letter-spacing: -0.02em;
+      margin-bottom: 3rem;
+    }
+
+    /* Carousel */
+    .carousel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .carousel-stage {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .carousel-arrow {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .carousel-arrow:hover {
+      border-color: var(--red);
+      background: var(--red-dim);
+    }
+
+    .carousel-arrow svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--text-muted);
+    }
+
+    .carousel-arrow:hover svg { stroke: var(--red); }
+
+    /* Phone frame */
+    .phone-frame {
+      position: relative;
+      width: clamp(220px, 36vw, 364px);
+      flex-shrink: 0;
+    }
+
+    .phone-shell {
+      position: relative;
+      background: #1a1a1a;
+      border-radius: 44px;
+      padding: 14px 10px;
+      box-shadow:
+        0 0 0 2px #333,
+        0 30px 80px rgba(0,0,0,0.35),
+        0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 22px;
+      background: #1a1a1a;
+      border-radius: 0 0 14px 14px;
+      z-index: 5;
+    }
+
+    .phone-screen {
+      border-radius: 34px;
+      overflow: hidden;
+      aspect-ratio: 9/19.5;
+      background: #111;
+      position: relative;
+    }
+
+    .phone-screen img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.35s ease;
+    }
+
+    /* Caption */
+    .carousel-caption {
+      text-align: center;
+      max-width: 460px;
+    }
+
+    .caption-title {
+      font-size: 1.43rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+      transition: opacity 0.3s;
+    }
+
+    .caption-text {
+      font-size: 1.17rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      line-height: 1.6;
+      transition: opacity 0.3s;
+    }
+
+    /* Dots */
+    .carousel-dots {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .dot.active {
+      background: var(--red);
+      transform: scale(1.3);
+    }
+
+    /* ══════════════════════════════════════
+       FEATURES
+    ══════════════════════════════════════ */
+    .features-section {
+      background: var(--white);
+      padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 6vw, 5rem);
+    }
+
+    .features-grid {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .feature-card {
+      background: var(--off-white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.75rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--red-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .feature-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--red);
+    }
+
+    .feature-card h3 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-card p {
+      font-size: 1.14rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    footer {
+      background: var(--black);
+      padding: 2.5rem clamp(1.5rem, 6vw, 5rem);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .footer-links a {
+      font-size: 1.04rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.35);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+    .footer-copy {
+      width: 100%;
+      font-size: 0.94rem;
+      color: rgba(255,255,255,0.18);
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+    /* ══════════════════════════════════════
+       KEYFRAMES
+    ══════════════════════════════════════ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media (max-width: 560px) {
+      .nav-links .nav-link-hide { display: none; }
+      .carousel-stage { gap: 0.75rem; }
+      .carousel-arrow { width: 36px; height: 36px; }
+      .phone-frame { width: clamp(200px, 62vw, 280px); }
+      footer { justify-content: center; text-align: center; }
+      .footer-copy { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-glow-tl"></div>
+
+  <nav class="hero-nav">
+    <a href="#" class="nav-logo">
+    </a>
+    <div class="nav-links">
+      <a href="#features" class="nav-link-hide">Features</a>
+      <a href="#screenshots" class="nav-link-hide">Screenshots</a>
+      <a href="https://nantiadigital.com/doable/privacy-policy/" class="nav-link-hide">Privacy</a>
+      <a href="#download" class="nav-cta">Download</a>
+    </div>
+  </nav>
+
+  <div class="hero-body">
+
+    <!-- Doable logo -->
+    <div class="hero-logo">
+      <div class="logo-glow-wrap">
+        <div class="logo-glow logo-glow-white"></div>
+        <div class="logo-glow logo-glow-red"></div>
+        <img src="assets/logo.png" alt="doable" style="height: clamp(240px, 54vw, 420px); width: auto; position: relative; z-index: 1;" />
+      </div>
+    </div>
+
+    <p class="hero-tagline">
+      <strong>A simple, clean task manager.</strong><br/>
+      No ads. No tracking. Just your tasks - organized, your way.
+    </p>
+
+    <div class="hero-buttons" id="download">
+      <a href="#" class="btn-store">
+        <!-- Google Play icon -->
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.18 23.76a2 2 0 0 0 2.09-.22l12.09-6.99-3.28-3.28-10.9 10.49zm-1.18-21.14v18.76l10.1-9.38L2 2.62zM20.49 10.09l-2.49-1.44-3.7 3.41 3.7 3.41 2.51-1.45a2.03 2.03 0 0 0 0-3.93zM5.27.46L17.36 7.45 14.08 10.73 3.18.24A2 2 0 0 1 5.27.46z"/>
+        </svg>
+        <span>
+          <span class="btn-store-sub">Get it on</span>
+          <span class="btn-store-label">Google Play</span>
+        </span>
+      </a>
+    </div>
+
+    <div class="hero-badges">
+      <span class="badge red">No Ads</span>
+      <span class="badge red">No Tracking</span>
+      <span class="badge">Free</span>
+      <span class="badge">Offline</span>
+      <span class="badge">Dark Mode</span>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════
+     SCREENSHOT CAROUSEL
+══════════════════════════════════════ -->
+<section class="carousel-section" id="screenshots">
+  <p class="section-label">See it in action</p>
+  <h2 class="section-title">Everything you need, nothing you don't</h2>
+
+  <div class="carousel">
+    <div class="carousel-stage">
+      <button class="carousel-arrow" id="prev" aria-label="Previous">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2.2" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+
+      <div class="phone-frame">
+        <div class="phone-shell">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <img id="carousel-img" src="assets/main_app_overview.jpeg" alt="App screenshot" />
+          </div>
+        </div>
+      </div>
+
+      <button class="carousel-arrow" id="next" aria-label="Next">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2.2" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="carousel-caption">
+      <p class="caption-title" id="caption-title">Your tasks, neatly organized</p>
+      <p class="caption-text" id="caption-text">See everything you need to do for the day at a glance. Tasks are neatly grouped by date with color labels to help you stay on top of things.</p>
+    </div>
+
+    <div class="carousel-dots" id="dots"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FEATURES
+══════════════════════════════════════ -->
+<section class="features-section" id="features">
+  <p class="section-label">Why doable</p>
+  <h2 class="section-title" style="max-width:600px;margin-left:auto;margin-right:auto;margin-bottom:2.5rem;">Built around simplicity</h2>
+
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636"/>
+        </svg>
+      </div>
+      <h3>Zero Ads, Always</h3>
+      <p>No banners, no popups, no sponsored content. doable is completely free of advertising - forever.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4 4 4m6 0v12m0 0 4-4m-4 4-4-4"/>
+        </svg>
+      </div>
+      <h3>Swipe Gestures</h3>
+      <p>Swipe left to delete, swipe right to reschedule. Managing tasks is fast and satisfying.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="4" width="18" height="18" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 2v4M8 2v4M3 10h18"/>
+        </svg>
+      </div>
+      <h3>Calendar View</h3>
+      <p>Navigate your schedule month by month. Dots indicate which days have tasks pending.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m-12 5h12m-12 5h12M4 7h.01M4 12h.01M4 17h.01"/>
+        </svg>
+      </div>
+      <h3>Drag to Reorder</h3>
+      <p>Long-press any task and drag it to exactly where you want it in your list.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="9"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.5 11 14.5 15 10"/>
+        </svg>
+      </div>
+      <h3>Multi-Date Tasks</h3>
+      <p>Schedule the same task across multiple dates at once - perfect for recurring activities.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364-.707.707M6.343 17.657l-.707.707m12.728 0-.707-.707M6.343 6.343l-.707-.707M12 7a5 5 0 1 0 0 10A5 5 0 0 0 12 7z"/>
+        </svg>
+      </div>
+      <h3>Dark & Light Mode</h3>
+      <p>Switch between dark and light themes. Also customize your accent color, font, and date format.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m0 0v2m0-2h2m-2 0H10M12 3C7.03 3 3 7.03 3 12a9 9 0 0 0 9 9 9 9 0 0 0 9-9c0-4.97-4.03-9-9-9z"/>
+        </svg>
+      </div>
+      <h3>Fully Offline</h3>
+      <p>No internet needed. Your data never leaves your device - no accounts, no servers, no sync.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h6m-6 4h4M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>
+        </svg>
+      </div>
+      <h3>Task Descriptions</h3>
+      <p>Add a detailed description to any task. Great for shopping lists, notes, and sub-steps.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="3"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+        </svg>
+      </div>
+      <h3>Color Labels</h3>
+      <p>Tag tasks with a color to visually group or prioritize them however works best for you.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer>
+  <a href="#" class="footer-logo">
+    <img src="assets/icon.png" width="88" height="88" alt="Doable icon" />
+  </a>
+
+  <div class="footer-links">
+    <a href="#features">Features</a>
+    <a href="#screenshots">Screenshots</a>
+    <a href="privacy-policy.html">Privacy Policy</a>
+    <a href="mailto:play@nantiadigital.com">Contact</a>
+  </div>
+
+  <p class="footer-copy">&copy; 2026 nantia Digital &nbsp;·&nbsp; doable is developed and published by nantia Digital.</p>
+</footer>
+
+<script>
+  const slides = [
+    {
+      img: 'assets/main_app_overview.jpeg',
+      title: 'Your tasks, neatly organized',
+      text: 'See everything you need to do for the day at a glance. Tasks are neatly grouped by date with color labels to help you stay on top of things.'
+    },
+    {
+      img: 'assets/main_task_add_overview.jpeg',
+      title: 'Add tasks in seconds',
+      text: 'Name it, pick a color, choose a date - or leave it as "any day" and tackle it whenever you\'re ready.'
+    },
+    {
+      img: 'assets/select_multiple_dates.jpeg',
+      title: 'Schedule across multiple dates',
+      text: 'Tap multiple days on the calendar to add the same task to several dates at once. Perfect for recurring plans.'
+    },
+    {
+      img: 'assets/task_info_card.jpeg',
+      title: 'Task details at a tap',
+      text: 'Tap any task to see its full info - date, color label, and description all in one clean card.'
+    },
+    {
+      img: 'assets/calendar_view.jpeg',
+      title: 'Calendar overview',
+      text: 'Navigate your schedule month by month. Dots mark days with pending tasks, so you always know what\'s coming up.'
+    },
+    {
+      img: 'assets/hover_reorder.jpeg',
+      title: 'Drag to reorder',
+      text: 'Long-press any task and drag it to exactly where you want it. Rearrange your whole list in seconds.'
+    },
+    {
+      img: 'assets/delete_task_swipe.jpeg',
+      title: 'Swipe left to delete',
+      text: 'Done with a task for good? A quick left swipe reveals the delete action and removes it cleanly.'
+    },
+    {
+      img: 'assets/reschedule_task_swipe.jpeg',
+      title: 'Swipe right to reschedule',
+      text: 'Getting to a task tomorrow? Slide it right and pick a new date instantly - no menus needed.'
+    },
+    {
+      img: 'assets/reschedule_card.jpeg',
+      title: 'Flexible rescheduling',
+      text: 'Hit "Tomorrow" for a quick reschedule, or open the calendar to pick any date you like.'
+    },
+    {
+      img: 'assets/no_ads.png',
+      title: 'Zero ads. Forever.',
+      text: 'doable is completely free of advertising. No popups, no banners, no sponsored content - ever.'
+    },
+    {
+      img: 'assets/settings.jpeg',
+      title: 'Make it yours',
+      text: 'Toggle dark mode, choose an accent color, switch fonts, and pick your preferred date format - all from Settings.'
+    },
+  ];
+
+  let current = 0;
+  const img = document.getElementById('carousel-img');
+  const titleEl = document.getElementById('caption-title');
+  const textEl = document.getElementById('caption-text');
+  const dotsEl = document.getElementById('dots');
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(n) {
+    current = (n + slides.length) % slides.length;
+    const slide = slides[current];
+
+    // Fade out
+    img.style.opacity = '0';
+    titleEl.style.opacity = '0';
+    textEl.style.opacity = '0';
+
+    setTimeout(() => {
+      img.src = slide.img;
+      img.alt = slide.title;
+      titleEl.textContent = slide.title;
+      textEl.textContent = slide.text;
+
+      img.style.opacity = '1';
+      titleEl.style.opacity = '1';
+      textEl.style.opacity = '1';
+    }, 300);
+
+    // Update dots
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+    });
+  }
+
+  document.getElementById('prev').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('next').addEventListener('click', () => goTo(current + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+    if (e.key === 'ArrowRight') goTo(current + 1);
+  });
+</script>
+
+</body>
+</html>
