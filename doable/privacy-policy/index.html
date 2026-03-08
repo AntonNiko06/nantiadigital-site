@@ -1,16 +1,611 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>Doable Privacy Policy</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — doable</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f7f5f0;
+      --surface: #ffffff;
+      --ink: #1a1814;
+      --ink-muted: #6b6760;
+      --ink-faint: #b5b2ad;
+      --accent: #c0392b;
+      --accent-light: #fdf0ee;
+      --border: #e4e1dc;
+      --rule: #d8d4ce;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.75;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    header {
+      background-color: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 clamp(1.5rem, 5vw, 4rem);
+    }
+
+    .header-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.35rem;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+    }
+
+    /* ── Main ── */
+    main {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      margin-bottom: 3.5rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+    }
+
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .hero-meta-item svg {
+      flex-shrink: 0;
+      opacity: 0.55;
+    }
+
+    /* ── Table of contents ── */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem 2rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .toc-title {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 1rem;
+    }
+
+    .toc ol {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.3rem 2rem;
+      counter-reset: toc;
+    }
+
+    .toc li {
+      counter-increment: toc;
+    }
+
+    .toc a {
+      text-decoration: none;
+      color: var(--ink-muted);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      transition: color 0.15s;
+      padding: 0.2rem 0;
+    }
+
+    .toc a::before {
+      content: counter(toc, decimal-leading-zero);
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--accent);
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .toc a:hover {
+      color: var(--accent);
+    }
+
+    /* ── Sections ── */
+    .section {
+      margin-bottom: 3rem;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .section:nth-child(1)  { animation-delay: 0.05s; }
+    .section:nth-child(2)  { animation-delay: 0.10s; }
+    .section:nth-child(3)  { animation-delay: 0.15s; }
+    .section:nth-child(4)  { animation-delay: 0.20s; }
+    .section:nth-child(5)  { animation-delay: 0.25s; }
+    .section:nth-child(6)  { animation-delay: 0.30s; }
+    .section:nth-child(7)  { animation-delay: 0.35s; }
+    .section:nth-child(8)  { animation-delay: 0.40s; }
+    .section:nth-child(9)  { animation-delay: 0.45s; }
+    .section:nth-child(10) { animation-delay: 0.50s; }
+    .section:nth-child(11) { animation-delay: 0.55s; }
+    .section:nth-child(12) { animation-delay: 0.60s; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .section h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.25rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+
+    .section p {
+      color: #3d3b37;
+      font-size: 0.95rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .section p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── Lists ── */
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin: 0.85rem 0;
+    }
+
+    .pill {
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--ink-muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .dot-list {
+      list-style: none;
+      margin: 0.85rem 0;
+    }
+
+    .dot-list li {
+      font-size: 0.9rem;
+      color: #3d3b37;
+      padding: 0.3rem 0 0.3rem 1.3rem;
+      position: relative;
+    }
+
+    .dot-list li::before {
+      content: '';
+      position: absolute;
+      left: 0.1rem;
+      top: 0.75rem;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.6;
+    }
+
+    /* ── Callout ── */
+    .callout {
+      background: var(--accent-light);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.25rem;
+      font-size: 0.88rem;
+      color: var(--accent);
+      font-weight: 400;
+      margin: 0.85rem 0;
+      line-height: 1.6;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 0 0 3rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 5vw, 4rem);
+      margin-top: 2rem;
+    }
+
+    .footer-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+    }
+
+    .footer-brand {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1rem;
+      color: var(--ink-muted);
+    }
+
+    .footer-contact {
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+    }
+
+    .footer-contact a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer-contact a:hover {
+      text-decoration: underline;
+    }
+
+    .footer-copy {
+      width: 100%;
+      font-size: 0.75rem;
+      color: var(--ink-faint);
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 540px) {
+      .toc ol {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<h1>Privacy Policy for Doable</h1>
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <a class="logo" href="#"><span style="color:#c0392b;">do</span><span style="color:var(--ink);">able</span></a>
+      <span class="badge">Privacy Policy</span>
+    </div>
+  </header>
 
-<p>Doable does not collect, store, or share any personal data.</p>
+  <!-- Main content -->
+  <main>
 
-<p>All data remains locally on the user's device.</p>
+    <!-- Hero -->
+    <div class="hero">
+      <p class="hero-eyebrow">Legal &amp; Privacy</p>
+      <h1>We don't collect<br><em>your data.</em></h1>
+      <div class="hero-meta">
+        <span class="hero-meta-item">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="3" width="12" height="11" rx="2" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M5 2v2M11 2v2M2 7h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          Last updated: March 2026
+        </span>
+        <span class="hero-meta-item">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          Applies to: doable (mobile app)
+        </span>
+        <span class="hero-meta-item">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5s4.5-5 4.5-8.5c0-2.5-2-4.5-4.5-4.5z" stroke="currentColor" stroke-width="1.4"/>
+            <circle cx="8" cy="6" r="1.5" stroke="currentColor" stroke-width="1.2"/>
+          </svg>
+          Developer: Nantia Digital
+        </span>
+      </div>
+    </div>
 
-<p>Contact: play@nantiadigital.com</p>
+    <!-- Table of Contents -->
+    <div class="toc">
+      <p class="toc-title">Contents</p>
+      <ol>
+        <li><a href="#s1">Overview</a></li>
+        <li><a href="#s2">Information We Collect</a></li>
+        <li><a href="#s3">Data Stored on Your Device</a></li>
+        <li><a href="#s4">No Analytics or Tracking</a></li>
+        <li><a href="#s5">No Advertising</a></li>
+        <li><a href="#s6">No Third-Party Data Sharing</a></li>
+        <li><a href="#s7">Internet Connectivity</a></li>
+        <li><a href="#s8">Children's Privacy</a></li>
+        <li><a href="#s9">Data Security</a></li>
+        <li><a href="#s10">Your Privacy Rights</a></li>
+        <li><a href="#s11">Changes to This Policy</a></li>
+        <li><a href="#s12">Contact</a></li>
+      </ol>
+    </div>
+
+    <!-- Sections -->
+    <div class="section" id="s1">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2>Overview</h2>
+      </div>
+      <p>Your privacy is important. This Privacy Policy explains what information is collected, how it is used, and what rights users have regarding their data when using the App.</p>
+      <div class="callout">The App is designed to function without collecting personal data from users.</div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section" id="s2">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2>Information We Collect</h2>
+      </div>
+      <p>The App does not collect, store, transmit, or share any personal information. This includes, but is not limited to:</p>
+      <div class="pill-list">
+        <span class="pill">Names</span>
+        <span class="pill">Email addresses</span>
+        <span class="pill">Phone numbers</span>
+        <span class="pill">Location data</span>
+        <span class="pill">Device identifiers</span>
+        <span class="pill">Usage analytics</span>
+        <span class="pill">Advertising identifiers</span>
+        <span class="pill">Contacts or address book data</span>
+        <span class="pill">Photos, files, or media</span>
+        <span class="pill">Health or fitness data</span>
+      </div>
+      <p>The developer of the App does not receive any user data.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section" id="s3">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2>Data Stored on Your Device</h2>
+      </div>
+      <p>Some information created by the user within the App may be stored locally on the user's device in order for the App to function. Examples may include:</p>
+      <ul class="dot-list">
+        <li>Tasks or entries created within the App</li>
+        <li>User preferences or settings</li>
+      </ul>
+      <p>This data:</p>
+      <ul class="dot-list">
+        <li>Remains only on the user's device</li>
+        <li>Is not transmitted to the developer</li>
+        <li>Is not stored on external servers</li>
+        <li>Is not accessible by the developer</li>
+      </ul>
+      <p>If the App is uninstalled, locally stored data may be deleted by the operating system.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section" id="s4">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2>No Analytics or Tracking</h2>
+      </div>
+      <p>The App does not use analytics or tracking technologies. Specifically, the App does not integrate any third-party analytics services, including but not limited to:</p>
+      <div class="pill-list">
+        <span class="pill">Google Analytics</span>
+        <span class="pill">Firebase Analytics</span>
+        <span class="pill">Mixpanel</span>
+      </div>
+      <p>Therefore, no information about user behavior, device usage, or interaction with the App is collected.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section" id="s5">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2>No Advertising</h2>
+      </div>
+      <p>The App does not display advertisements and does not use advertising services such as:</p>
+      <div class="pill-list">
+        <span class="pill">Google AdMob</span>
+        <span class="pill">Facebook Audience Network</span>
+      </div>
+      <p>Because no advertising services are used, no advertising identifiers or marketing data are collected.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section" id="s6">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2>No Third-Party Data Sharing</h2>
+      </div>
+      <p>The App does not share any user information with third parties. Since the App does not collect data, there is no information that can be sold, rented, shared, or disclosed.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section" id="s7">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <h2>Internet Connectivity</h2>
+      </div>
+      <p>The App does not require internet connectivity for its core functionality and does not transmit user data over the internet.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section" id="s8">
+      <div class="section-header">
+        <span class="section-num">08</span>
+        <h2>Children's Privacy</h2>
+      </div>
+      <p>The App does not knowingly collect personal information from children. Since the App does not collect any personal data from users of any age, no personal data from children is processed.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section" id="s9">
+      <div class="section-header">
+        <span class="section-num">09</span>
+        <h2>Data Security</h2>
+      </div>
+      <p>Because the App does not collect or transmit user data, no personal information is stored on external servers controlled by the developer. All locally stored data remains under the control of the user on their own device.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section" id="s10">
+      <div class="section-header">
+        <span class="section-num">10</span>
+        <h2>Your Privacy Rights</h2>
+      </div>
+      <p>Since the App does not collect or process personal data, the developer does not store any user information that could be accessed, modified, or deleted. Users remain in full control of any data stored locally on their own device.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section" id="s11">
+      <div class="section-header">
+        <span class="section-num">11</span>
+        <h2>Changes to This Privacy Policy</h2>
+      </div>
+      <p>This Privacy Policy may be updated from time to time. If changes are made, the updated version will be published at the same policy location with an updated revision date.</p>
+      <p>Continued use of the App after any updates may constitute acceptance of the updated Privacy Policy.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section" id="s12">
+      <div class="section-header">
+        <span class="section-num">12</span>
+        <h2>Contact</h2>
+      </div>
+      <p>If you have any questions about this Privacy Policy or the App, you may contact:</p>
+      <div class="callout">
+        <strong>Nantia Digital</strong><br />
+        <a href="mailto:play@nantiadigital.com" style="color: inherit;">play@nantiadigital.com</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-brand">doable by Nantia Digital</span>
+      <span class="footer-contact">
+        Questions? <a href="mailto:play@nantiadigital.com">play@nantiadigital.com</a>
+      </span>
+      <p class="footer-copy">&copy; 2026 Nantia Digital. This privacy policy was last updated in March 2026.</p>
+    </div>
+  </footer>
 
 </body>
 </html>
